@@ -1,0 +1,32 @@
+{
+  "name": "spica",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Spica: The Open Meta-Specification & Multi-Lens Studio for Spec-Driven Development",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "studio": "pnpm --filter web dev",
+    "studio:build": "pnpm --filter web build",
+    "pack:core": "pnpm --filter @simway/spica pack && mkdir -p releases && mv *.tgz releases/",
+    "project-c4": "node ./scripts/project-c4.mjs",
+    "project-domain-map": "node ./scripts/project-domain-map.mjs",
+    "project-ddd-canvas": "node ./scripts/project-ddd-canvas.mjs",
+    "project-openapi": "node ./scripts/project-openapi.mjs",
+    "project-kiro": "node ./scripts/project-kiro.mjs",
+    "project-all": "node ./scripts/project-all.mjs",
+    "lens1": "node ./scripts/project-c4.mjs",
+    "lens2": "node ./scripts/project-domain-map.mjs",
+    "lens3": "node ./scripts/project-ddd-canvas.mjs",
+    "lens4": "node ./scripts/project-openapi.mjs",
+    "lens5": "node ./scripts/project-kiro.mjs"
+  },
+  "packageManager": "pnpm@11.2.2",
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "Apache-2.0"
+}

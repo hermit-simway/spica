@@ -1,0 +1,188 @@
+{
+  "domainName": "PublicLibraryCirculation",
+  "systemName": "Public Library System",
+  "systemDescription": "Manages book catalog, patron circulation, active holds, and overdue fines.",
+  "createdAt": "2026-10-26T00:00:00Z",
+  "specVersion": "0.0.0",
+  "author": "Spica Core Team",
+  "actors": [
+    { "name": "Patron", "description": "A registered library member who borrows books and places holds." },
+    { "name": "Librarian", "description": "Staff member managing circulation, returns, and fee settlement." }
+  ],
+  "externalSystems": [
+    { "name": "NotificationGateway", "description": "Sends email/SMS alerts when reserved books are ready for pickup.", "relationship": "Sends pickup notices via async events" }
+  ],
+  "aggregates": [
+    {
+      "name": "Patron",
+      "rootEntity": "Patron",
+      "states": ["Active", "Suspended"],
+      "entities": [
+        {
+          "name": "Patron",
+          "fields": [
+            { "name": "$id", "type": "string", "required": true },
+            { "name": "name", "type": "string", "required": true },
+            { "name": "email", "type": "string", "required": true },
+            { "name": "unpaidFees", "type": "number", "required": true }
+          ]
+        }
+      ],
+      "commands": [
+        {
+          "name": "RegisterPatron",
+          "actor": "Librarian",
+          "isCreation": true,
+          "requiredState": "",
+          "targetState": "Active",
+          "parameters": [
+            { "name": "name", "type": "string", "required": true },
+            { "name": "email", "type": "string", "required": true }
+          ]
+        },
+        {
+          "name": "PayFee",
+          "actor": "Librarian",
+          "requiredState": "Active",
+          "targetState": "Active",
+          "parameters": [
+            { "name": "amount", "type": "number", "required": true }
+          ]
+        },
+        {
+          "name": "SuspendPatron",
+          "actor": "System",
+          "requiredState": "Active",
+          "targetState": "Suspended",
+          "parameters": []
+        },
+        {
+          "name": "ReactivatePatron",
+          "actor": "Librarian",
+          "requiredState": "Suspended",
+          "targetState": "Active",
+          "parameters": []
+        }
+      ],
+      "reducers": [
+        {
+          "commandName": "PayFee",
+          "targetField": "unpaidFees",
+          "operation": "SUBTRACT",
+          "sourceParameter": "amount"
+        }
+      ]
+    },
+    {
+      "name": "BookCopy",
+      "rootEntity": "BookCopy",
+      "states": ["Available", "OnHoldShelf", "OnLoan"],
+      "entities": [
+        {
+          "name": "BookCopy",
+          "fields": [
+            { "name": "$id", "type": "string", "required": true },
+            { "name": "isbn", "type": "string", "required": true },
+            { "name": "title", "type": "string", "required": true },
+            { "name": "isRestricted", "type": "boolean", "required": true }
+          ]
+        }
+      ],
+      "commands": [
+        {
+          "name": "RegisterBookCopy",
+          "actor": "Librarian",
+          "isCreation": true,
+          "requiredState": "",
+          "targetState": "Available",
+          "parameters": [
+            { "name": "isbn", "type": "string", "required": true },
+            { "name": "title", "type": "string", "required": true },
+            { "name": "isRestricted", "type": "boolean", "required": true }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hold",
+      "rootEntity": "Hold",
+      "states": ["Placed", "Completed", "Canceled"],
+      "entities": [
+        {
+          "name": "Hold",
+          "fields": [
+            { "name": "$id", "type": "string", "required": true },
+            { "name": "patronId", "type": "string", "required": true },
+            { "name": "bookCopyId", "type": "string", "required": true },
+            { "name": "placedAt", "type": "string", "required": true }
+          ]
+        }
+      ],
+      "commands": [
+        {
+          "name": "PlaceHold",
+          "actor": "Patron",
+          "isCreation": true,
+          "requiredState": "",
+          "targetState": "Placed",
+          "parameters": [
+            { "name": "patronId", "type": "string", "required": true },
+            { "name": "bookCopyId", "type": "string", "required": true }
+          ]
+        },
+        {
+          "name": "CancelHold",
+          "actor": "Patron",
+          "requiredState": "Placed",
+          "targetState": "Canceled",
+          "parameters": []
+        },
+        {
+          "name": "CompleteHold",
+          "actor": "Librarian",
+          "requiredState": "Placed",
+          "targetState": "Completed",
+          "parameters": []
+        }
+      ]
+    },
+    {
+      "name": "Loan",
+      "rootEntity": "Loan",
+      "states": ["Active", "Returned", "Overdue"],
+      "entities": [
+        {
+          "name": "Loan",
+          "fields": [
+            { "name": "$id", "type": "string", "required": true },
+            { "name": "patronId", "type": "string", "required": true },
+            { "name": "bookCopyId", "type": "string", "required": true },
+            { "name": "checkoutDate", "type": "string", "required": true },
+            { "name": "dueDate", "type": "string", "required": true }
+          ]
+        }
+      ],
+      "commands": [
+        {
+          "name": "CheckoutBook",
+          "actor": "Librarian",
+          "isCreation": true,
+          "requiredState": "",
+          "targetState": "Active",
+          "parameters": [
+            { "name": "patronId", "type": "string", "required": true },
+            { "name": "bookCopyId", "type": "string", "required": true },
+            { "name": "dueDate", "type": "string", "required": true }
+          ]
+        },
+        {
+          "name": "ReturnBook",
+          "actor": "Librarian",
+          "requiredState": "Active",
+          "targetState": "Returned",
+          "parameters": []
+        }
+      ]
+    }
+  ]
+}

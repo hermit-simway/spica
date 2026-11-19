@@ -1,0 +1,21 @@
+Spica — The Open Meta-Specification for Spec-Driven Development (SDD)
+Copyright 2026 Simway (https://simway.io)
+
+This product includes software developed at Simway.
+Licensed under the Apache License, Version 2.0 (the "License").
+
+Third-party material:
+
+The Aggregate Design Canvas v1.1 template in
+`packages/core/templates/aggregate-design-canvas-v1.1.excalidraw.json` and its
+generated adaptation in `packages/core/src/defaultTemplate.ts` are based on
+the DDD Crew Aggregate Design Canvas. The embedded attribution credits Kacper
+Gunia, Gabriel Anhaia, and Domain-Driven Design Crew.
+
+This material is licensed under the Creative Commons Attribution 4.0
+International License (CC BY 4.0):
+https://creativecommons.org/licenses/by/4.0/
+
+The Apache License, Version 2.0 applies to Spica project code; it does not
+replace the CC BY 4.0 terms applicable to the canvas material and its
+adaptation.

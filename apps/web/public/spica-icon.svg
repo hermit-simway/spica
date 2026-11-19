@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <defs>
+    <!-- Background subtle glow -->
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#818CF8" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Star Core Radiant Gradient -->
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="45%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="40%" stop-color="#E0F2FE"/>
+      <stop offset="80%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#2563EB" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <!-- North Facet: Electric Cyan -->
+    <linearGradient id="northLeft" x1="128" y1="20" x2="96" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+    <linearGradient id="northRight" x1="128" y1="20" x2="160" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#BAE6FD"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+
+    <!-- South Facet: Deep Indigo/Cyan -->
+    <linearGradient id="southLeft" x1="128" y1="236" x2="96" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <linearGradient id="southRight" x1="128" y1="236" x2="160" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#1E3A8A"/>
+    </linearGradient>
+
+    <!-- East Facet: Bright Celestial -->
+    <linearGradient id="eastTop" x1="236" y1="128" x2="128" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7DD3FC"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="eastBottom" x1="236" y1="128" x2="128" y2="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+
+    <!-- West Facet: Deep Celestial -->
+    <linearGradient id="westTop" x1="20" y1="128" x2="128" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="westBottom" x1="20" y1="128" x2="128" y2="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0369A1"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+
+    <!-- Diagonal Secondary Diamond Sparks -->
+    <linearGradient id="diagFlare" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F0F9FF"/>
+      <stop offset="100%" stop-color="#818CF8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Glow -->
+  <circle cx="128" cy="128" r="110" fill="url(#bgGlow)"/>
+
+  <!-- Secondary Diagonal Rays (The 4 Projections) -->
+  <g opacity="0.75">
+    <!-- NE Ray -->
+    <polygon points="128,128 178,78 186,86 136,136" fill="url(#diagFlare)" opacity="0.6"/>
+    <polygon points="128,128 186,86 178,78 128,128" fill="#BAE6FD" opacity="0.4"/>
+    <!-- NW Ray -->
+    <polygon points="128,128 78,78 70,86 120,136" fill="url(#diagFlare)" opacity="0.5"/>
+    <!-- SE Ray -->
+    <polygon points="128,128 178,178 186,170 136,120" fill="url(#diagFlare)" opacity="0.5"/>
+    <!-- SW Ray -->
+    <polygon points="128,128 78,178 70,170 120,120" fill="url(#diagFlare)" opacity="0.6"/>
+  </g>
+
+  <!-- Primary 4-Point Star (Faceted Crystalline Geometry) -->
+  <g>
+    <!-- North Point -->
+    <polygon points="128,18 128,128 92,128" fill="url(#northLeft)"/>
+    <polygon points="128,18 164,128 128,128" fill="url(#northRight)"/>
+
+    <!-- South Point -->
+    <polygon points="128,238 92,128 128,128" fill="url(#southLeft)"/>
+    <polygon points="128,238 128,128 164,128" fill="url(#southRight)"/>
+
+    <!-- East Point -->
+    <polygon points="238,128 128,92 128,128" fill="url(#eastTop)"/>
+    <polygon points="238,128 128,128 128,164" fill="url(#eastBottom)"/>
+
+    <!-- West Point -->
+    <polygon points="18,128 128,92 128,128" fill="url(#westTop)"/>
+    <polygon points="18,128 128,128 128,164" fill="url(#westBottom)"/>
+  </g>
+
+  <!-- Inner Diamond Refractive Core -->
+  <polygon points="128,76 168,128 128,180 88,128" fill="url(#coreGlow)" opacity="0.9"/>
+  <polygon points="128,88 156,128 128,168 100,128" fill="#FFFFFF"/>
+
+  <!-- Radiant Stellar Pulse Center -->
+  <circle cx="128" cy="128" r="8" fill="#FFFFFF"/>
+</svg>

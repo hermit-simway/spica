@@ -1,0 +1,129 @@
+# Spica — Open Domain-Model Specification & Toolchain for Spec-Driven Development (SDD)
+
+> Spica is an open domain-model specification and projection toolchain for Spec-Driven Development (SDD). Open ADM is the specification; Spica is the toolchain. It eliminates spec drift and AI coding hallucinations by defining business domain invariants once in a machine-verifiable format (Open ADM) and deterministically projecting into OpenAPI 3.0 contracts, C4 Level 1 context diagrams, topological domain aggregate maps, and interactive domain canvases.
+
+- **GitHub Repository:** https://github.com/sim-way/spica
+- **npm Package:** https://www.npmjs.com/package/@simway/spica
+- **License:** Apache 2.0
+
+---
+
+## 🤖 1-Minute Quick Start for AI Agents (Claude Code, Cursor, Codex)
+
+If you are an AI coding agent or terminal agent, install the official Spica Architect skill in one command:
+
+```bash
+# Add Spica Architect skill to Claude Code
+npx skills add sim-way/spica --skill spica-architect
+
+# Or add globally across Claude Code and Cursor
+npx skills add sim-way/spica --skill spica-architect -g --agent claude-code cursor
+```
+
+Prompt your agent:
+> "Design a [Domain] model using Spica Open ADM and save it as .spica/[domain].adm.json"
+
+---
+
+## 🛠️ CLI Usage (Zero Installation via npx)
+
+Run Spica CLI directly against any `<domain>.adm.json` model:
+
+```bash
+# 1. Mathematically verify state machine transitions & domain invariants (exits 0 if valid)
+npx -y @simway/spica validate .spica/domain.adm.json
+
+# 2. Build and project all lenses atomically in one command
+npx -y @simway/spica build .spica/domain.adm.json
+
+# 3. Project production-grade OpenAPI 3.0.3 contract with typed schemas & errors
+npx -y @simway/spica project-openapi .spica/domain.adm.json -o openapi.json
+
+# 4. Project C4 System Context diagram (Mermaid C4Context format)
+npx -y @simway/spica project-c4 .spica/domain.adm.json -o c4-context.mmd
+
+# 5. Project Domain Aggregate Map (Mermaid format)
+npx -y @simway/spica project-domain-map .spica/domain.adm.json -o domain-map.mmd
+
+# 6. Project Domain Canvas (bi-directional Markdown)
+npx -y @simway/spica project-ddd-canvas .spica/domain.adm.json -o domain-canvas.md
+```
+
+---
+
+## 📋 Open ADM Core Schema Structure
+
+An Open ADM model is a strongly-typed JSON document (`AstRoot`):
+
+```json
+{
+  "schemaVersion": "1.0.0",
+  "domainName": "OrderManagement",
+  "description": "Order lifecycle and fulfillment domain",
+  "aggregates": [
+    {
+      "name": "Order",
+      "rootEntity": "Order",
+      "description": "Customer order aggregate root",
+      "stateMachine": {
+        "initialState": "Created",
+        "states": ["Created", "Paid", "Shipped", "Delivered", "Cancelled"],
+        "transitions": [
+          { "from": "Created", "to": "Paid", "trigger": "PayOrder" },
+          { "from": "Paid", "to": "Shipped", "trigger": "ShipOrder" },
+          { "from": "Shipped", "to": "Delivered", "trigger": "DeliverOrder" },
+          { "from": "Created", "to": "Cancelled", "trigger": "CancelOrder" }
+        ]
+      },
+      "commands": [
+        {
+          "name": "PayOrder",
+          "params": [{ "name": "paymentMethod", "type": "string" }],
+          "emits": ["OrderPaid"]
+        }
+      ],
+      "events": [
+        {
+          "name": "OrderPaid",
+          "fields": [{ "name": "paidAt", "type": "string" }]
+        }
+      ],
+      "invariants": [
+        "Order total must be strictly positive",
+        "Paid orders cannot be cancelled without refund"
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 🔄 Multi-Lens Projections Matrix
+
+| Lens | Target Platform | Output Format | CLI Command |
+| :--- | :--- | :--- | :--- |
+| **API Contract** | REST APIs / Gateways | Valid OpenAPI 3.0.3 specification with typed request/response schemas | `spica project-openapi` |
+| **Macro Architecture** | Documentation & ARB | C4 Level 1 System Context (`C4Context`) diagram | `spica project-c4` |
+| **Domain Map** | Architecture Reviews | Topological aggregate map & state machines | `spica project-domain-map` |
+| **Domain Canvas** | Team Discovery & Visual Modeling | Tabular aggregate state matrix & Markdown import/export | `spica project-ddd-canvas` |
+
+---
+
+## 💻 Programmatic TypeScript SDK (`@simway/spica`)
+
+```typescript
+import { validateAdm, projectOpenApi3Spec, projectDomainAggregateMap } from "@simway/spica";
+
+const result = validateAdm(myDomainModel);
+if (!result.valid) {
+  console.error("Invariant errors:", result.errors);
+  process.exit(1);
+}
+
+// Project OpenAPI 3.0
+const openapi = projectOpenApi3Spec(result.model);
+
+// Project Mermaid Domain Map
+const mermaid = projectDomainAggregateMap(result.model);
+```

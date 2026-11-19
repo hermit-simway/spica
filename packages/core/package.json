@@ -1,0 +1,38 @@
+{
+  "name": "@simway/spica",
+  "version": "0.0.8",
+  "description": "Canonical TypeScript/Zod Open ADM schema, invariant validator, multi-lens specification and diagram projectors, and DDD Crew markdown parser for Spica",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "spica": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "skills",
+    "LICENSE",
+    "README.md"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/generate-schema.mjs",
+    "prepack": "npm run build",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.0"
+  },
+  "license": "Apache-2.0"
+}
