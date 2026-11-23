@@ -1,13 +1,15 @@
 {
   "name": "@simway/spica",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Canonical TypeScript/Zod Open ADM schema, invariant validator, multi-lens specification and diagram projectors, and DDD Crew markdown parser for Spica",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "bin": {
