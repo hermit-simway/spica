@@ -11,97 +11,47 @@
 ---
 
 > **One Domain Model. Multiple Projections.**  
-> Spica is a projection toolchain for **Spec-Driven Development (SDD)**, built around Open ADM, an open, machine-verifiable specification for application-domain models.  
-> Define domain rules once in Open ADM and generate projections for C4 diagrams, domain maps, DDD Crew canvases, and OpenAPI 3.0 contracts.
+> Open ADM is the single source of truth for domain concepts. Spica uses it behind the scenes to generate C4 diagrams, domain maps, DDD canvases, and OpenAPI contracts.
 >  
-> 🤖 **For AI Agents:** Install the Spica Architect skill with `npx skills add sim-way/spica --skill spica-architect`.
+> 🤖 **For AI Agents:** `npx skills add sim-way/spica --skill spica-architect`
 
 ---
 
 ### 🧠 What is Spica?
 
-Spica is an open Spec-Driven Development toolchain that turns a machine-verifiable domain model into architecture diagrams, API contracts, and other project artifacts.
+Spica is a Spec-Driven Development toolchain that transforms a machine-verifiable domain model into architecture diagrams, API contracts, and project artifacts.
 
-#### Open ADM: Spica's domain-model IR
+**Open ADM** (Application Domain Model) is a structured IR for business concepts: entities, lifecycle states, commands, events, and invariants. From this single source, Spica generates:
 
-Open ADM (Application Domain Model) is an Apache-2.0-licensed, machine-verifiable **Intermediate Representation (IR)** for business-domain concepts. It gives Spica a structured source from which to generate multiple artifacts:
-
-```
-[ Fuzzy Business Intent / PRD / AI Prompt ]
-                    │
-                    ▼
-      ┌───────────────────────────┐
-      │       Open ADM (IR)       │  ◄── Application Domain Model:
-      │ Entities · States · Rules │      Canonical source for modeled domain concepts
-      └─────────────┬─────────────┘
-                    │ (Generated Projections)
-        ┌───────────┼───────────┐
-        ▼           ▼           ▼
-   [ C4 Docs ]  [ Domain Map ]  [ OpenAPI / Other Artifacts ]
-```
-
-#### Why not just OpenAPI, Prisma, or TypeScript?
-
-| Specification | What It Captures | What It Misses |
+| Output | Command | Purpose |
 | :--- | :--- | :--- |
-| **OpenAPI / Swagger** | HTTP routes, REST verbs, JSON payloads | Does not natively model aggregate boundaries, state-machine semantics (`Created → Paid → Shipped`), or domain invariants. |
-| **Prisma / SQL DDL** | Database tables, column types, foreign keys | Does not by itself model business operations, lifecycle rules, or domain events. |
-| **TypeScript / Zod** | Typed data shapes and runtime validation | Types and schemas alone do not define domain semantics or generate cross-system architecture projections. |
-| **Open ADM** | A model of selected business-domain concepts | Captures entities, lifecycle states, commands, event emissions, and declared invariants in a machine-verifiable JSON model. |
+| C4 Diagram | `spica project-c4 <file>` | System architecture documentation |
+| Domain Map | `spica project-domain-map <file>` | Aggregate boundaries & state lifecycles |
+| DDD Canvas | `spica build` | Team discovery & visual modeling |
+| OpenAPI 3.0 | `spica project-openapi <file>` | REST API contracts |
 
----
-
-### 💡 Why Spica?
-
-- **Agent-Centered Workflow:** Gives AI coding agents (Claude Code, Codex, Cursor) a validated, machine-verifiable domain model to reference during implementation.
-- **Deterministic Validation:** Checks schema integrity, aggregate boundaries, and state-machine lifecycles without requiring database containers or a project build.
-- **Tech-Agnostic Intent:** Models pure business semantics free of framework, ORM, or database coupling.
-
----
-
-### 🔄 Multi-Lens Projections
-
-From a single Open ADM model, Spica deterministically generates multiple project artifacts:
-
-| Lens | Purpose | Output Format | CLI Command |
-| :--- | :--- | :--- | :--- |
-| **🌐 Macro Architecture** | System Documentation | C4 Level 1 System Context diagram | `spica project-c4 <file>` |
-| **📊 Domain Map** | Technical Review & Invariants | Topological aggregate map & state lifecycles | `spica project-domain-map <file>` |
-| **📋 Domain Canvas** | Team Discovery & Visual Modeling | DDD Crew Aggregate Design Canvas (Markdown export) | `spica build` |
-| **🔌 OpenAPI Contract** | REST APIs & Gateways | OpenAPI 3.0.3 specification with typed models & error schemas | `spica project-openapi <file>` |
+**Why Open ADM?** Unlike OpenAPI (lacks state semantics), Prisma (no business operations), or TypeScript (no cross-system projections), Open ADM captures business semantics needed for AI agents, deterministic validation, and tech-agnostic intent.
 
 ---
 
 ### ⚡ Quick Start
 
-**Prerequisites:** Node.js 20 or later is required for `npx` and the Spica CLI. For local development, pnpm is also required.
-
-#### 1. Bootstrap IDE Tooling
-Scaffold turnkey configs (`CLAUDE.md`, `CODEX.md`, and `.vscode/settings.json`) in your project root:
+**Prerequisites:** Node.js 20+
 
 ```bash
+# Initialize IDE tooling
 npx -y @simway/spica init
-```
 
-#### 2. Author & Validate Your Domain Model
-Scaffold a schema-compliant model or validate an existing one:
-
-```bash
-# Scaffold a new domain model (defaults to .spica/<Domain>.adm.json)
+# Create & validate a domain model
 npx -y @simway/spica new Billing --actor Admin --aggregate Invoice
-
-# Validate the model and its declared constraints
 npx -y @simway/spica validate .spica/Billing.adm.json
-```
 
-#### 3. Build & Project
-```bash
-# Validate, then generate the projection bundle in one command
+# Generate all projections
 npx -y @simway/spica build .spica/Billing.adm.json
 
-# Or project individual lenses on-demand
-npx -y @simway/spica project-c4 .spica/Billing.adm.json -o c4-context.mmd
-npx -y @simway/spica project-domain-map .spica/Billing.adm.json -o domain-map.mmd
+# Or individual projections
+npx -y @simway/spica project-c4 .spica/Billing.adm.json -o c4.mmd
+npx -y @simway/spica project-domain-map .spica/Billing.adm.json -o map.mmd
 npx -y @simway/spica project-openapi .spica/Billing.adm.json -o openapi.json
 ```
 
@@ -113,8 +63,8 @@ npx -y @simway/spica project-openapi .spica/Billing.adm.json -o openapi.json
 git clone https://github.com/sim-way/spica.git
 cd spica
 pnpm install
-pnpm dev       # Launches local development server
-pnpm test      # Runs automated verification test suite
+pnpm dev       # Launch dev server
+pnpm test      # Run tests
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md) for contribution guidelines.
@@ -123,6 +73,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md) for contri
 
 ### 📚 Resources
 
-- 🤖 **[Claude Code & Agent Skill](skills/spica-architect/SKILL.md):** AgentSkills standard for autonomous coding agents.
-- 🤖 **[Spica Architect Prompt](prompts/spica-architect.md):** Socratic DDD domain modeler system prompt.
-- ⚖️ **[License](LICENSE):** Apache 2.0 for Spica project code; see [NOTICE](NOTICE) for third-party material.
+- 🤖 [Claude Code & Agent Skill](skills/spica-architect/SKILL.md)
+- 🤖 [Spica Architect Prompt](prompts/spica-architect.md)
+- ⚖️ [License](LICENSE) — Apache 2.0
