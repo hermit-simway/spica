@@ -12,6 +12,8 @@ export const FieldNodeSchema = z.object({
   // reference). It is the canonical list signal for relationship derivation
   // (#316), consumed alongside the `*Id`/`*Ids` naming conventions.
   isList: z.boolean().optional(),
+  // Explicit identity flag marking this field as the entity primary key.
+  isIdentity: z.boolean().optional(),
   description: z.string().optional(),
   values: z.array(z.string()).optional(),
 });
@@ -33,7 +35,7 @@ export type EntityNode = z.infer<typeof EntityNodeSchema>;
 
 export const ValueObjectNodeSchema = z.object({
   name: z.string(),
-  type: z.string(),
+  type: z.string().optional(),
   values: z.array(z.string()).optional(),
   fields: z.array(FieldNodeSchema).optional(),
   relationships: z.array(RelationshipNodeSchema).optional(),
@@ -118,6 +120,7 @@ export const CommandNodeSchema = z.object({
   isCreation: z.boolean().optional(),
   triggerEvent: z.string().optional(),
   emits: z.string().optional(),
+  emitsEvents: z.array(z.string()).optional(),
 });
 export type CommandNode = z.infer<typeof CommandNodeSchema>;
 
@@ -200,6 +203,7 @@ export type BddScenarioNode = z.infer<typeof BddScenarioNodeSchema>;
 
 export const AggregateNodeSchema = z.object({
   name: z.string(),
+  description: z.string().optional(),
   rootEntity: z.string(),
   entities: z.array(EntityNodeSchema).default([]).optional(),
   valueObjects: z.array(ValueObjectNodeSchema).default([]).optional(),
@@ -210,6 +214,7 @@ export const AggregateNodeSchema = z.object({
   // Ingestion Gate as a stateless (anemic) aggregate.
   states: z.array(z.string()).min(1),
   commands: z.array(CommandNodeSchema).default([]).optional(),
+  events: z.array(DomainEventNodeSchema).default([]).optional(),
   policies: z.array(PolicyNodeSchema).optional(),
   transitions: z.array(TransitionNodeSchema).optional(),
   invariants: z.array(InvariantNodeSchema).optional(),

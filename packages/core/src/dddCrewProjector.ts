@@ -157,7 +157,7 @@ export function projectDddCrewMarkdown(model: AstRoot): string {
 
     // --- Box 2: Description ---
     lines.push("## 2. Description");
-    const desc = `Consistency boundary for the ${agg.name} aggregate. Enforces invariants and coordinates state transitions for ${agg.rootEntity}.`;
+    const desc = agg.description || `Consistency boundary for the ${agg.name} aggregate. Enforces invariants and coordinates state transitions for ${agg.rootEntity}.`;
     lines.push(desc);
     lines.push("");
 
@@ -226,7 +226,9 @@ export function projectDddCrewMarkdown(model: AstRoot): string {
       const params = (cmd.parameters || [])
         .map((p) => `${p.name || "param"}: ${p.type || "string"}${p.required ? "" : "?"}${p.isList ? "[]" : ""}`)
         .join(", ") || "-";
-      const emits = cmd.emits || `${cmdName}Emitted`;
+      const emits = (cmd.emitsEvents && cmd.emitsEvents.length > 0)
+        ? cmd.emitsEvents.join(", ")
+        : (cmd.emits || `${cmdName}Emitted`);
 
       lines.push(
         `| ${escapeTableCell(cmdName)} | ${escapeTableCell(cmdActor)} | ${escapeTableCell(params)} | ${escapeTableCell(cmd.requiredState || "-")} | ${escapeTableCell(cmd.targetState || "-")} | ${isCreation} | ${escapeTableCell(emits)} |`
