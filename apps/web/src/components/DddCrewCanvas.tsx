@@ -93,7 +93,20 @@ export function DddCrewCanvas({
   const invariants = activeAgg.invariants ?? [];
   const transitions = activeAgg.transitions ?? [];
   const reducers = activeAgg.reducers ?? [];
-  const emittedEvents = commands.filter((c) => c.emits).map((c) => ({ event: c.emits as string, command: c.name }));
+  const aggregateEvents = (activeAgg.events ?? []).map((e) => ({
+    event: e.name,
+    command: e.trigger || (commands.find((c) => c.emitsEvents?.includes(e.name))?.name ?? "-")
+  }));
+  const commandEmittedEvents = commands.flatMap((c) =>
+    (c.emitsEvents ?? []).map((e) => ({ event: e, command: c.name }))
+  );
+  const eventMap = new Map<string, { event: string; command: string }>();
+  for (const item of [...aggregateEvents, ...commandEmittedEvents]) {
+    if (!eventMap.has(item.event)) {
+      eventMap.set(item.event, item);
+    }
+  }
+  const emittedEvents = Array.from(eventMap.values());
 
   const openImport = () => {
     setImportText("");
