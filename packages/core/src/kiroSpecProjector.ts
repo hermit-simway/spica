@@ -150,14 +150,15 @@ function generateSystemRequirements(model: AstRoot): string {
     // 1. Creation / Transition commands
     for (const cmd of agg.commands || []) {
       const actorPrefix = cmd.actor ? ` by ${cmd.actor}` : "";
+      const emitsList = (cmd.emitsEvents && cmd.emitsEvents.length > 0) ? cmd.emitsEvents.join(", ") : "";
       if (cmd.isCreation) {
-        const emitClause = cmd.emits ? ` and emit the "${cmd.emits}" domain event` : "";
+        const emitClause = emitsList ? ` and emit the "${emitsList}" domain event` : "";
         lines.push(
           `${acIndex++}. **WHEN** a valid "${cmd.name}" command is submitted${actorPrefix} **THE SYSTEM SHALL** instantiate a new ${agg.name} aggregate in state "${cmd.targetState}"${emitClause}.`
         );
       } else {
         const reqState = cmd.requiredState ? ` while in state "${cmd.requiredState}"` : "";
-        const emitClause = cmd.emits ? ` and emit "${cmd.emits}"` : "";
+        const emitClause = emitsList ? ` and emit "${emitsList}"` : "";
         lines.push(
           `${acIndex++}. **WHEN** "${cmd.name}" is executed${actorPrefix}${reqState} **THE SYSTEM SHALL** transition ${agg.name} to state "${cmd.targetState}"${emitClause}.`
         );
@@ -253,7 +254,9 @@ function generateSystemDesign(model: AstRoot): string {
       const actor = cmd.actor || "-";
       const req = cmd.isCreation ? "*(Creation)*" : cmd.requiredState || "*";
       const target = cmd.targetState || "-";
-      const emits = cmd.emits ? `\`${cmd.emits}\`` : "-";
+      const emits = (cmd.emitsEvents && cmd.emitsEvents.length > 0)
+        ? cmd.emitsEvents.map((e) => `\`${e}\``).join(", ")
+        : "-";
       lines.push(`| \`${cmd.name}\` | ${actor} | ${req} | \`${target}\` | ${emits} |`);
     }
     lines.push("");
@@ -347,9 +350,12 @@ function generateSystemTasks(model: AstRoot): string {
   reqIndex = 1;
   lines.push("## Phase 3: Domain Events & Policy Listeners");
   for (const agg of model.aggregates) {
-    const emittedEvents = (agg.commands || [])
-      .map((c) => c.emits)
-      .filter((e): e is string => Boolean(e));
+    const emittedEvents = Array.from(
+      new Set([
+        ...(agg.events || []).map((e) => e.name),
+        ...(agg.commands || []).flatMap((c) => c.emitsEvents || [])
+      ])
+    ).filter((e): e is string => Boolean(e));
     const hasEvents = emittedEvents.length > 0 || (agg.policies?.length ?? 0) > 0;
 
     if (hasEvents) {
@@ -398,13 +404,14 @@ function generateAggregateKiroFiles(model: AstRoot, agg: AggregateNode): KiroSpe
   let ac = 1;
   for (const cmd of agg.commands || []) {
     const actor = cmd.actor ? ` by ${cmd.actor}` : "";
+    const emitsList = (cmd.emitsEvents && cmd.emitsEvents.length > 0) ? cmd.emitsEvents.join(", ") : "";
     if (cmd.isCreation) {
       reqLines.push(
-        `${ac++}. **WHEN** "${cmd.name}" is called${actor} **THE SYSTEM SHALL** create a ${agg.name} in state "${cmd.targetState}"${cmd.emits ? ` and emit "${cmd.emits}"` : ""}.`
+        `${ac++}. **WHEN** "${cmd.name}" is called${actor} **THE SYSTEM SHALL** create a ${agg.name} in state "${cmd.targetState}"${emitsList ? ` and emit "${emitsList}"` : ""}.`
       );
     } else {
       reqLines.push(
-        `${ac++}. **WHEN** "${cmd.name}" is executed${actor} in state "${cmd.requiredState}" **THE SYSTEM SHALL** transition to "${cmd.targetState}"${cmd.emits ? ` and emit "${cmd.emits}"` : ""}.`
+        `${ac++}. **WHEN** "${cmd.name}" is executed${actor} in state "${cmd.requiredState}" **THE SYSTEM SHALL** transition to "${cmd.targetState}"${emitsList ? ` and emit "${emitsList}"` : ""}.`
       );
       if (cmd.requiredState) {
         reqLines.push(
@@ -443,7 +450,8 @@ function generateAggregateKiroFiles(model: AstRoot, agg: AggregateNode): KiroSpe
   desLines.push("| Command | Required State | Target State | Emits |");
   desLines.push("| :--- | :--- | :--- | :--- |");
   for (const c of agg.commands || []) {
-    desLines.push(`| \`${c.name}\` | ${c.requiredState || "*"} | \`${c.targetState}\` | ${c.emits ? `\`${c.emits}\`` : "-"} |`);
+    const emits = (c.emitsEvents && c.emitsEvents.length > 0) ? c.emitsEvents.map((e) => `\`${e}\``).join(", ") : "-";
+    desLines.push(`| \`${c.name}\` | ${c.requiredState || "*"} | \`${c.targetState}\` | ${emits} |`);
   }
 
   // Tasks

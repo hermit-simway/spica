@@ -228,7 +228,7 @@ export function projectDddCrewMarkdown(model: AstRoot): string {
         .join(", ") || "-";
       const emits = (cmd.emitsEvents && cmd.emitsEvents.length > 0)
         ? cmd.emitsEvents.join(", ")
-        : (cmd.emits || `${cmdName}Emitted`);
+        : `${cmdName}Emitted`;
 
       lines.push(
         `| ${escapeTableCell(cmdName)} | ${escapeTableCell(cmdActor)} | ${escapeTableCell(params)} | ${escapeTableCell(cmd.requiredState || "-")} | ${escapeTableCell(cmd.targetState || "-")} | ${isCreation} | ${escapeTableCell(emits)} |`
@@ -242,7 +242,7 @@ export function projectDddCrewMarkdown(model: AstRoot): string {
     lines.push("| --- | --- | --- |");
     for (const cmd of agg.commands ?? []) {
       const cmdName = cmd.name || "CommandNode";
-      const eventName = cmd.emits || `${cmdName}Emitted`;
+      const eventName = (cmd.emitsEvents && cmd.emitsEvents.length > 0) ? cmd.emitsEvents.join(", ") : `${cmdName}Emitted`;
       const eventData = (cmd.parameters || []).map((p) => p.name).join(", ") || `${agg.rootEntity || "AggregateNode"} ID`;
       lines.push(
         `| ${escapeTableCell(eventName)} | ${escapeTableCell(cmdName)} | ${escapeTableCell(eventData)} |`

@@ -12,8 +12,6 @@ export const FieldNodeSchema = z.object({
   // reference). It is the canonical list signal for relationship derivation
   // (#316), consumed alongside the `*Id`/`*Ids` naming conventions.
   isList: z.boolean().optional(),
-  // Explicit identity flag marking this field as the entity primary key.
-  isIdentity: z.boolean().optional(),
   description: z.string().optional(),
   values: z.array(z.string()).optional(),
 });
@@ -119,7 +117,6 @@ export const CommandNodeSchema = z.object({
   payload: z.array(FieldNodeSchema).optional(),
   isCreation: z.boolean().optional(),
   triggerEvent: z.string().optional(),
-  emits: z.string().optional(),
   emitsEvents: z.array(z.string()).optional(),
 });
 export type CommandNode = z.infer<typeof CommandNodeSchema>;

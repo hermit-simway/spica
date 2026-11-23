@@ -52,7 +52,7 @@ export function projectDomainAggregateMap(model: AstRoot): string {
           for (const otherAgg of model.aggregates) {
             if (otherAgg.name === agg.name) continue;
             const matches = (otherAgg.commands ?? []).some(
-              (c) => c.emits === cmd.triggerEvent || `${c.name}Event` === cmd.triggerEvent
+              (c) => (c.emitsEvents && c.emitsEvents.includes(cmd.triggerEvent!)) || `${c.name}Event` === cmd.triggerEvent
             );
             if (matches) {
               eventFlowEdges.push(`    ${otherAgg.name} ==>|"triggers on ${cmd.triggerEvent}"| ${agg.name}`);

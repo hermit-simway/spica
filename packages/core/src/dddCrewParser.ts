@@ -319,7 +319,7 @@ export function parseDddCrewMarkdown(markdown: string): AstRoot {
           const targetState = targetStateRaw === "-" ? "" : targetStateRaw;
 
           const emitsRaw = row["emits event"] || row["emits"] || "-";
-          const emits = emitsRaw === "-" ? undefined : emitsRaw;
+          const emitsEvents = emitsRaw === "-" ? undefined : emitsRaw.split(",").map((s) => s.trim()).filter(Boolean);
 
           const triggerRaw = row["trigger event"] || row["trigger"] || "-";
           const triggerEvent = triggerRaw === "-" ? undefined : triggerRaw;
@@ -336,7 +336,7 @@ export function parseDddCrewMarkdown(markdown: string): AstRoot {
             requiredState,
             targetState,
             parameters,
-            emits,
+            emitsEvents: emitsEvents && emitsEvents.length > 0 ? emitsEvents : undefined,
             triggerEvent,
             policies
           });
