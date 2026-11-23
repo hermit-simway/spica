@@ -659,7 +659,7 @@ function generateDddCanvasHtml(model, markdown) {
             <div class="box-header">7. Created Events</div>
             <div class="card-list">
               \${commands.map(c => {
-                const evt = c.emits || (c.name + "Emitted");
+                const evt = (c.emitsEvents && c.emitsEvents.length > 0) ? c.emitsEvents.join(", ") : (c.name + "Emitted");
                 return \`
                   <div class="card card-evt">
                     <div style="display: flex; justify-content: space-between;">

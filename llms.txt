@@ -79,7 +79,7 @@ An Open ADM model is a strongly-typed JSON document (`AstRoot`):
         {
           "name": "PayOrder",
           "params": [{ "name": "paymentMethod", "type": "string" }],
-          "emits": ["OrderPaid"]
+          "emitsEvents": ["OrderPaid"]
         }
       ],
       "events": [

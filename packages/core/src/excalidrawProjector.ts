@@ -334,7 +334,7 @@ export function projectAggregateToExcalidraw(
     let cmdY = 660;
     commands.slice(0, 4).forEach((cmd) => {
       const actor = typeof cmd.actor === "string" ? cmd.actor : "User";
-      const emits = cmd.emits || `${cmd.name}Emitted`;
+      const emits = (cmd.emitsEvents && cmd.emitsEvents.length > 0) ? cmd.emitsEvents.join(", ") : `${cmd.name}Emitted`;
       dynamicContent.push(
         ...makeStickyNote(
           offsetX - 674,
@@ -365,7 +365,7 @@ export function projectAggregateToExcalidraw(
   if (commands.length > 0) {
     let evtY = 1450;
     commands.slice(0, 4).forEach((cmd) => {
-      const eventName = cmd.emits || `${cmd.name}Emitted`;
+      const eventName = (cmd.emitsEvents && cmd.emitsEvents.length > 0) ? cmd.emitsEvents.join(", ") : `${cmd.name}Emitted`;
       const eventData =
         (cmd.parameters || []).map((p) => p.name).join(", ") ||
         `${agg.rootEntity || "AggregateNode"} ID`;

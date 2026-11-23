@@ -104,11 +104,13 @@ const NODES: SpecNode[] = [
     },
     fields: [
       { name: "name", type: "string", required: true, description: "Globally unique aggregate name." },
+      { name: "description", type: "string", required: false, description: "High-level summary of the aggregate responsibility." },
       { name: "rootEntity", type: "string", required: true, description: "The entity acting as the aggregate root." },
       { name: "entities", type: "Entity[]", required: false, defaultValue: "[]", description: "Entities owned by this aggregate." },
       { name: "valueObjects", type: "ValueObject[]", required: false, defaultValue: "[]", description: "Value objects owned by this aggregate." },
       { name: "states", type: "string[]", required: true, description: "Lifecycle states (non-empty, min 1)." },
       { name: "commands", type: "Command[]", required: false, defaultValue: "[]", description: "State-transitioning commands." },
+      { name: "events", type: "DomainEvent[]", required: false, defaultValue: "[]", description: "Domain Events produced by this Aggregate representing immutable business facts." },
       { name: "policies", type: "Policy[]", required: false, description: "Policy rules constraining the aggregate." },
       { name: "transitions", type: "Transition[]", required: false, description: "Explicit state transition declarations." },
       { name: "invariants", type: "Invariant[]", required: false, description: "Business rule invariants." },
@@ -141,7 +143,7 @@ const NODES: SpecNode[] = [
     },
     fields: [
       { name: "name", type: "string", required: true, description: "Value object name." },
-      { name: "type", type: "string", required: true, description: "Primitive or composite type." },
+      { name: "type", type: "string", required: false, description: "Primitive or composite type." },
       { name: "values", type: "string[]", required: false, description: "Enumerated allowed values." },
       { name: "fields", type: "Field[]", required: false, description: "Composite value object fields." },
       { name: "relationships", type: "Relationship[]", required: false, description: "Structural relationships." },
@@ -194,7 +196,7 @@ const NODES: SpecNode[] = [
       { name: "payload", type: "Field[]", required: false, description: "Command payload." },
       { name: "isCreation", type: "boolean", required: false, description: "Whether this command creates the aggregate." },
       { name: "triggerEvent", type: "string", required: false, description: "External event that triggers this command." },
-      { name: "emits", type: "string", required: false, description: "Domain event emitted on success." },
+      { name: "emitsEvents", type: "string[]", required: false, description: "List of domain event names emitted by this command upon successful execution." },
     ],
   },
   {

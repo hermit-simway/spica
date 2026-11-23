@@ -64,7 +64,7 @@
       "type": "string"
     },
     "createdAt": {
-      "default": "2026-11-23T05:11:36.292Z",
+      "default": "2026-11-23T09:01:11.122Z",
       "type": "string",
       "format": "date-time",
       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
@@ -93,6 +93,9 @@
         "type": "object",
         "properties": {
           "name": {
+            "type": "string"
+          },
+          "description": {
             "type": "string"
           },
           "rootEntity": {
@@ -261,8 +264,7 @@
                 }
               },
               "required": [
-                "name",
-                "type"
+                "name"
               ],
               "additionalProperties": false
             }
@@ -378,14 +380,73 @@
                 "triggerEvent": {
                   "type": "string"
                 },
-                "emits": {
-                  "type": "string"
+                "emitsEvents": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 }
               },
               "required": [
                 "name",
                 "requiredState",
                 "targetState"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "events": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "emittedBy": {
+                  "type": "string"
+                },
+                "trigger": {
+                  "type": "string"
+                },
+                "payload": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "required": {
+                        "type": "boolean"
+                      },
+                      "isList": {
+                        "type": "boolean"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "values": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "type"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "name"
               ],
               "additionalProperties": false
             }
